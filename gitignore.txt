@@ -1,0 +1,13 @@
+# Raw & processed data
+data_preprocessing/data/raw/
+data_preprocessing/data/processed/
+
+# If you also have a parallel folder named 'data_preprocessing/data/outputs', ignore it too:
+data_preprocessing/data/outputs/
+
+# Jupyter noise
+.ipynb_checkpoints/
+
+# Archives & caches
+*.npz
+*.zip
