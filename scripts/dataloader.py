@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader, Subset
 import h5py
 import numpy as np
+import os
 
 class FractureHDF5Dataset(Dataset):
     """
@@ -35,14 +36,16 @@ class FractureHDF5Dataset(Dataset):
         if self.hf is None:
             self.hf = h5py.File(self.hdf5_path, 'r')
 
-        # --- Get Image (Same for both tasks) ---
-        image = self.hf['images'][idx]
-        image = torch.from_numpy(image).float().unsqueeze(0) # (1, 256, 256)
+        # Get Image (Same for both tasks)
+        # Assumes image is saved as (H, W)
+        image = self.hf['images'][idx] 
+        # Convert to (1, H, W) tensor for PyTorch
+        image = torch.from_numpy(image).float().unsqueeze(0) 
         
         if self.transform:
             image = self.transform(image)
         
-        # --- Get Target (Depends on the task) ---
+        # Get Target (Depends on the task)
         
         if self.task == 'classification':
             # Task 1: Return (image, label)
@@ -53,29 +56,33 @@ class FractureHDF5Dataset(Dataset):
         elif self.task == 'detection':
             # Task 2: Return (image, target_dict)
             
-            # 1. Get the bounding boxes
+            # 1. Get the bounding boxes ([x, y, w, h] format)
             bboxes_raw = self.hf['bboxes'][idx]
             
             # 2. Filter out the -1 padding
-            bboxes = bboxes_raw[bboxes_raw[:, 0] != -1.0]
+            bboxes_xywh = bboxes_raw[bboxes_raw[:, 0] != -1.0]
             
             # 3. Convert to a tensor
-            bboxes_tensor = torch.from_numpy(bboxes).float()
+            bboxes_xywh_tensor = torch.from_numpy(bboxes_xywh).float()
             
-            # 4. Handle edge case: no boxes (for a positive sample? should be rare)
-            if bboxes_tensor.shape[0] == 0:
-                # No boxes, return an empty target
-                bboxes_tensor = torch.empty((0, 4), dtype=torch.float32)
-                
+            # 4. Convert box format
+            # PyTorch models need [x1, y1, x2, y2] (top-left, bottom-right)
+            # We convert from [x, y, w, h]
+            boxes_xyxy_tensor = torch.zeros_like(bboxes_xywh_tensor)
+            if bboxes_xywh_tensor.shape[0] > 0:
+                boxes_xyxy_tensor[:, 0] = bboxes_xywh_tensor[:, 0] # x1 = x
+                boxes_xyxy_tensor[:, 1] = bboxes_xywh_tensor[:, 1] # y1 = y
+                boxes_xyxy_tensor[:, 2] = bboxes_xywh_tensor[:, 0] + bboxes_xywh_tensor[:, 2] # x2 = x + w
+                boxes_xyxy_tensor[:, 3] = bboxes_xywh_tensor[:, 1] + bboxes_xywh_tensor[:, 3] # y2 = y + h
+
             # 5. Create class labels for each box
-            # Since we only have one class ("fracture"), they are all label '1'
             # (Label '0' is reserved for the background)
-            num_boxes = bboxes_tensor.shape[0]
-            box_labels = torch.ones((num_boxes,), dtype=torch.int64)
+            num_boxes = boxes_xyxy_tensor.shape[0]
+            box_labels = torch.ones((num_boxes,), dtype=torch.int64) # All are class '1' (fracture)
             
             # 6. Create the final target dictionary
             target = {
-                "boxes": bboxes_tensor,
+                "boxes": boxes_xyxy_tensor,
                 "labels": box_labels
             }
             
@@ -97,6 +104,7 @@ def get_dataloaders(hdf5_path, batch_size, task='classification', num_workers=2)
     """
     
     print(f"Loading dataset for task: '{task}'...")
+    # Pass the task to the Dataset
     full_dataset = FractureHDF5Dataset(hdf5_path, task=task)
     
     print("Loading pre-defined train/val/test splits...")
@@ -116,8 +124,8 @@ def get_dataloaders(hdf5_path, batch_size, task='classification', num_workers=2)
     val_dataset = Subset(full_dataset, val_indices)
     test_dataset = Subset(full_dataset, test_indices)
 
-    # --- Define a collate_fn for detection ---
-    # This is needed because 'target' dicts can't be auto-batched
+    # A custom 'collate_fn' is required for detection
+    # to handle batches of varying numbers of boxes
     def detection_collate_fn(batch):
         return tuple(zip(*batch))
     
@@ -127,7 +135,7 @@ def get_dataloaders(hdf5_path, batch_size, task='classification', num_workers=2)
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
-        shuffle=True,
+        shuffle=True, # Shuffle the training set
         num_workers=num_workers,
         pin_memory=True,
         collate_fn=collate_function # Use custom collate for detection
@@ -136,7 +144,7 @@ def get_dataloaders(hdf5_path, batch_size, task='classification', num_workers=2)
     val_loader = DataLoader(
         val_dataset,
         batch_size=batch_size,
-        shuffle=False,
+        shuffle=False, # No need to shuffle val
         num_workers=num_workers,
         pin_memory=True,
         collate_fn=collate_function
@@ -145,7 +153,7 @@ def get_dataloaders(hdf5_path, batch_size, task='classification', num_workers=2)
     test_loader = DataLoader(
         test_dataset,
         batch_size=batch_size,
-        shuffle=False,
+        shuffle=False, # No need to shuffle test
         num_workers=num_workers,
         pin_memory=True,
         collate_fn=collate_function
