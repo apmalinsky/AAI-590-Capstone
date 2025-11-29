@@ -1,4 +1,4 @@
-## This script was made using Google Gemini AI ##
+## This script was consolidated using Google Gemini AI ##
 import torch
 from torch.utils.data import Dataset, DataLoader, Subset
 import h5py
