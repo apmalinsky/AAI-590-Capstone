@@ -91,16 +91,7 @@ class FractureHDF5Dataset(Dataset):
 def get_dataloaders(hdf5_path, batch_size, task='classification', num_workers=2):
     """
     Creates and returns the pre-split train, val, and test DataLoaders.
-    
-    Args:
-        hdf5_path (str): Path to the HDF5 file.
-        batch_size (int): Batch size for the DataLoaders.
-        task (str): 'classification' or 'detection'. This determines
-                    what the dataloader will yield.
-        num_workers (int): Number of workers for the DataLoaders.
-    
-    Returns:
-        (DataLoader, DataLoader, DataLoader): train_loader, val_loader, test_loader
+    Updated to support persistent_workers for stability in Notebooks.
     """
     
     print(f"Loading dataset for task: '{task}'...")
@@ -130,6 +121,10 @@ def get_dataloaders(hdf5_path, batch_size, task='classification', num_workers=2)
         return tuple(zip(*batch))
     
     collate_function = detection_collate_fn if task == 'detection' else None
+    
+    # --- SAFETY CHECK ---
+    # persistent_workers must be False if num_workers is 0
+    is_persistent = (num_workers > 0)
 
     # Create the DataLoaders
     train_loader = DataLoader(
@@ -138,26 +133,29 @@ def get_dataloaders(hdf5_path, batch_size, task='classification', num_workers=2)
         shuffle=True, # Shuffle the training set
         num_workers=num_workers,
         pin_memory=True,
-        collate_fn=collate_function # Use custom collate for detection
+        collate_fn=collate_function,
+        persistent_workers=is_persistent 
     )
 
     val_loader = DataLoader(
         val_dataset,
         batch_size=batch_size,
-        shuffle=False, # No need to shuffle val
+        shuffle=False, 
         num_workers=num_workers,
         pin_memory=True,
-        collate_fn=collate_function
+        collate_fn=collate_function,
+        persistent_workers=is_persistent
     )
 
     test_loader = DataLoader(
         test_dataset,
         batch_size=batch_size,
-        shuffle=False, # No need to shuffle test
+        shuffle=False, 
         num_workers=num_workers,
         pin_memory=True,
-        collate_fn=collate_function
+        collate_fn=collate_function,
+        persistent_workers=is_persistent
     )
 
-    print("DataLoaders created successfully.")
+    print(f"DataLoaders created successfully (Workers: {num_workers}, Persistent: {is_persistent}).")
     return train_loader, val_loader, test_loader
