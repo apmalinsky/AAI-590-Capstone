@@ -31,6 +31,9 @@ This project applies deep learning and computer vision methods to automate the d
 
 The goal is to develop, evaluate, and compare multiple model architectures, including a baseline CNN classifier, Faster R-CNN, YOLO, and DETR, to determine their effectiveness in identifying fracture presence and localizing fractures with bounding boxes. This work contributes towards AI-assisted diagnostic tools that may improve speed, consistency, and clinical workflow efficiency in medical imaging.
 
+## Presentation
+Feel free to checkout our [presentation](https://www.youtube.com/watch?v=rmchW63IFFU) walking through the project!
+
 ## Contributors
 Team 4 — Master of Science in Applied Artificial Intelligence, University of San Diego
 * Andy Malinsky 
