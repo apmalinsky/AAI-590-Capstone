@@ -60,9 +60,15 @@ Team 4 — Master of Science in Applied Artificial Intelligence, University of S
 * Scikit-learn
 * GPU acceleration via CUDA (if applicable)
 * Kaggle API (dataset acquisition)
+* Kaggle Notebook
 
 ## Project Description
 This project uses a curated subset of the RSNA 2022 Cervical Spine Fracture Detection dataset. The dataset consists of 28,868 CT scan slices, each labeled as fractured or non-fractured, with bounding boxes provided for fractured slices.
+
+### Data Setup
+* Navigate to [Kaggle](https://www.kaggle.com/) and click "+ Create" on the left-hand side, then select "Notebook".
+* There, you can import [Notebook 00](00_CreatePrivateDataset.ipynb) to get started.
+* This notebook will walk you through step-by-step to create your own private Kaggle dataset.
 
 ### Data Preprocessing
 * Images resized to 256x256 and normalized to [0, 1]
