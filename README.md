@@ -31,6 +31,9 @@ This project applies deep learning and computer vision methods to automate the d
 
 The goal is to develop, evaluate, and compare multiple model architectures, including a baseline CNN classifier, Faster R-CNN, YOLO, and DETR, to determine their effectiveness in identifying fracture presence and localizing fractures with bounding boxes. This work contributes towards AI-assisted diagnostic tools that may improve speed, consistency, and clinical workflow efficiency in medical imaging.
 
+## Presentation
+Feel free to checkout our [presentation](https://www.youtube.com/watch?v=rmchW63IFFU) walking through the project!
+
 ## Contributors
 Team 4 — Master of Science in Applied Artificial Intelligence, University of San Diego
 * Andy Malinsky 
@@ -77,9 +80,9 @@ This project uses a curated subset of the RSNA 2022 Cervical Spine Fracture Dete
 * Verified image dimensions, class distribution, bounding-box consistency, and normalization during EDA
 
 ### Models Implemented
-* **Simple CNN Baseline**: Binary classifier to establish foundational performance
-* **Faster R-CNN**: Two-stage detector with ResNet-50 + FPN backbone; designed for small-object medical detection tasks
-* **DETR (Detection Transformer)**: Transformer-based detection model fine-tuned with frozen early backbone layers for stability
+* [**Simple CNN Baseline**](02_SimpleCNN.ipynb): Binary classifier to establish foundational performance
+* [**Faster R-CNN**](04_Faster_R_CNN.ipynb): Two-stage detector with ResNet-50 + FPN backbone; designed for small-object medical detection tasks
+* [**DETR (Detection Transformer)**](03_DETR.ipynb): Transformer-based detection model fine-tuned with frozen early backbone layers for stability
 
 Each model was trained, validated, and tested on the same curated dataset, with steps including threshold tuning, early stopping, and bounding-box visualization.
 
