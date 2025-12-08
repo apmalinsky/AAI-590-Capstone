@@ -77,7 +77,8 @@ This project uses a curated subset of the RSNA 2022 Cervical Spine Fracture Dete
 * Images resized to 256x256 and normalized to [0, 1]
 * Undersampling applied to mitigate severe class imbalance (target ratio 1:3 positive to negative)
 * Stratified group shuffle split ensures all slices from a patient remain in a single dataset partition.
-* Verified image dimensions, class distribution, bounding-box consistency, and normalization during EDA
+* Verified image dimensions, class distribution, bounding-box consistency, and pixel normalization EDA
+* Check our [Exploratory Data Analysis](01_ExploratoryDataAnalysis.ipynb)
 
 ### Models Implemented
 * [**Simple CNN Baseline**](02_SimpleCNN.ipynb): Binary classifier to establish foundational performance
