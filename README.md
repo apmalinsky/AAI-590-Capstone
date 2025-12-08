@@ -77,9 +77,9 @@ This project uses a curated subset of the RSNA 2022 Cervical Spine Fracture Dete
 * Verified image dimensions, class distribution, bounding-box consistency, and normalization during EDA
 
 ### Models Implemented
-* **Simple CNN Baseline**: Binary classifier to establish foundational performance
-* **Faster R-CNN**: Two-stage detector with ResNet-50 + FPN backbone; designed for small-object medical detection tasks
-* **DETR (Detection Transformer)**: Transformer-based detection model fine-tuned with frozen early backbone layers for stability
+* [**Simple CNN Baseline**](02_SimpleCNN.ipynb): Binary classifier to establish foundational performance
+* [**Faster R-CNN**](04_Faster_R_CNN.ipynb): Two-stage detector with ResNet-50 + FPN backbone; designed for small-object medical detection tasks
+* [**DETR (Detection Transformer)**](03_DETR.ipynb): Transformer-based detection model fine-tuned with frozen early backbone layers for stability
 
 Each model was trained, validated, and tested on the same curated dataset, with steps including threshold tuning, early stopping, and bounding-box visualization.
 
