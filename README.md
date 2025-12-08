@@ -70,7 +70,7 @@ This project uses a curated subset of the RSNA 2022 Cervical Spine Fracture Dete
 
 ### Data Setup
 * Navigate to [Kaggle](https://www.kaggle.com/) and click "+ Create" on the left-hand side, then select "Notebook".
-* There, you can import [Notebook 00](00_CreatePrivateDataset.ipynb) to get started.
+* There, you can import [**Notebook 00**](00_CreatePrivateDataset.ipynb) to get started.
 * This notebook will walk you through step-by-step to create your own private Kaggle dataset.
 
 ### Data Preprocessing
@@ -78,7 +78,7 @@ This project uses a curated subset of the RSNA 2022 Cervical Spine Fracture Dete
 * Undersampling applied to mitigate severe class imbalance (target ratio 1:3 positive to negative)
 * Stratified group shuffle split ensures all slices from a patient remain in a single dataset partition.
 * Verified image dimensions, class distribution, bounding-box consistency, and pixel normalization EDA
-* Check our [Exploratory Data Analysis](01_ExploratoryDataAnalysis.ipynb)
+* Check our [**Exploratory Data Analysis**](01_ExploratoryDataAnalysis.ipynb)
 
 ### Models Implemented
 * [**Simple CNN Baseline**](02_SimpleCNN.ipynb): Binary classifier to establish foundational performance
